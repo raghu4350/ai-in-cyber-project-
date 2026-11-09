@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Driven Cyber Threat Detection Prototype — Comprehensive Technical Report & Project Guide</title>
+<style>
+    /* Standard system fonts - completely offline and self-contained */
+    :root {
+        --primary: #1e3a8a;
+        --primary-light: #3b82f6;
+        --secondary: #0f172a;
+        --accent: #0ea5e9;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --text: #1e293b;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        line-height: 1.65;
+        padding: 2.5rem 1rem;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: var(--card-bg);
+        padding: 3.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        border: 1px solid var(--border);
+    }
+
+    /* Header & Badges */
+    .header {
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .header h1 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: var(--secondary);
+        letter-spacing: -0.02em;
+        line-height: 1.25;
+        margin-bottom: 0.75rem;
+    }
+
+    .header .subtitle {
+        font-size: 1.15rem;
+        color: var(--primary-light);
+        font-weight: 500;
+        margin-bottom: 1.25rem;
+    }
+
+    .meta-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.35rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+    }
+
+    .badge.primary { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+    .badge.success { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+    .badge.warning { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+
+    /* Section Headings */
+    h2 {
+        font-size: 1.55rem;
+        font-weight: 700;
+        color: var(--secondary);
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-top: 1.5rem;
+        margin-bottom: 0.6rem;
+    }
+
+    p {
+        margin-bottom: 1.1rem;
+        font-size: 0.98rem;
+    }
+
+    /* Callout Boxes */
+    .callout {
+        padding: 1.2rem 1.4rem;
+        border-radius: 10px;
+        margin: 1.5rem 0;
+        border-left: 4px solid;
+    }
+
+    .callout.info {
+        background-color: #f0f9ff;
+        border-left-color: var(--accent);
+        color: #0369a1;
+    }
+
+    .callout.success {
+        background-color: #f0fdf4;
+        border-left-color: var(--success);
+        color: #15803d;
+    }
+
+    .callout.warning {
+        background-color: #fffbeb;
+        border-left-color: var(--warning);
+        color: #92400e;
+    }
+
+    .callout strong {
+        display: block;
+        margin-bottom: 0.35rem;
+        font-size: 1rem;
+    }
+
+    /* Tables */
+    .table-container {
+        overflow-x: auto;
+        margin: 1.5rem 0;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+        text-align: left;
+    }
+
+    th {
+        background: #f8fafc;
+        padding: 0.85rem 1rem;
+        font-weight: 700;
+        color: var(--secondary);
+        border-bottom: 2px solid var(--border);
+    }
+
+    td {
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    .highlight-best {
+        background-color: #ecfdf5 !important;
+        font-weight: 700;
+        color: #047857;
+    }
+
+    /* Code & Architecture Boxes */
+    pre, code {
+        font-family: 'JetBrains Mono', Consolas, monospace;
+    }
+
+    pre {
+        background: #0f172a;
+        color: #f8fafc;
+        padding: 1.25rem;
+        border-radius: 10px;
+        overflow-x: auto;
+        font-size: 0.88rem;
+        line-height: 1.5;
+        margin: 1.25rem 0;
+    }
+
+    p code, li code {
+        background: #e2e8f0;
+        color: #0f172a;
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.88rem;
+        font-weight: 600;
+    }
+
+    /* Lists */
+    ul, ol {
+        margin: 0.75rem 0 1.25rem 1.5rem;
+    }
+
+    li {
+        margin-bottom: 0.45rem;
+        font-size: 0.96rem;
+    }
+
+    /* Diagram Block */
+    .pipeline-diagram {
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        line-height: 1.45;
+        color: #1e293b;
+        overflow-x: auto;
+    }
+
+    /* Print Optimization for PDF generation */
+    @media print {
+        body {
+            padding: 0;
+            background: #ffffff;
+        }
+        .container {
+            box-shadow: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            max-width: 100%;
+        }
+        h2 {
+            page-break-before: auto;
+            page-break-after: avoid;
+        }
+        table, pre, .callout {
+            page-break-inside: avoid;
+        }
+        .no-print {
+            display: none;
+        }
+    }
+
+    .print-button {
+        display: inline-block;
+        padding: 0.65rem 1.25rem;
+        background: var(--primary);
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        border: none;
+        transition: background 0.2s;
+    }
+
+    .print-button:hover {
+        background: var(--primary-light);
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="no-print" style="text-align: right; margin-bottom: 1.5rem;">
+        <button class="print-button" onclick="window.print()">🖨️ Save as PDF / Print Full Report</button>
+    </div>
+
+    <div class="header">
+        <h1>AI-Driven Cyber Threat Awareness & Detection Prototype</h1>
+        <div class="subtitle">Complete Technical Project Guide, Architecture, Dataset Analysis & Model Benchmark Report</div>
+        <div class="meta-badges">
+            <span class="badge primary">Course: ENSP355 (AI in Cyber Security Lab)</span>
+            <span class="badge">Institution: K.R. Mangalam University</span>
+            <span class="badge success">Benchmark: UNSW-NB15 Dataset</span>
+            <span class="badge warning">Evaluated Records: 257,673 Packets</span>
+        </div>
+    </div>
+
+    <!-- 1. PROBLEM STATEMENT -->
+    <h2>1. Project Problem Statement (In Plain Words)</h2>
+    <p>
+        Every single second, an enterprise network processes millions of packets—emails, video calls, logins, database queries, and downloads. Hidden inside this sea of legitimate network traffic are malicious cyber attacks trying to breach databases, lock servers with ransomware, probe open ports, or shut down online operations.
+    </p>
+
+    <div class="callout warning">
+        <strong>Why Traditional Defense Systems (Firewalls & Static IDS) Fail:</strong>
+        Traditional network intrusion detection systems (such as Snort or classic firewalls) depend on <em>static signatures</em>—pre-written static rules (e.g., <em>"If a packet contains exact hexadecimal string X from IP Y, block it"</em>). Attackers easily bypass these rules by:
+        <ul>
+            <li>Modifying exploit code slightly (polymorphic malware).</li>
+            <li>Obfuscating payloads or changing destination ports.</li>
+            <li>Using zero-day exploits (new vulnerabilities that have no existing signature).</li>
+        </ul>
+    </div>
+
+    <p>
+        <strong>The Solution: Next-Generation AI/ML Threat Detection.</strong> Rather than memorizing static malicious text strings, Artificial Intelligence and Machine Learning models analyze <em>traffic behavior</em>—such as connection duration, packet frequencies, packet sizes, sequence numbers, and Time-To-Live (TTL) discrepancies. AI learns how normal traffic behaves vs. anomalous attack patterns, allowing it to spot brand-new, unseen attacks in near real-time.
+    </p>
+
+    <div class="callout info">
+        <strong>The Core Engineering Challenge (False Positives vs. False Negatives):</strong>
+        In network security, you face two opposite dangers:
+        <ol>
+            <li><strong>False Negative (FN) - Missed Attack:</strong> An attacker sneaks in unnoticed $\rightarrow$ leads to ransomware or catastrophic data theft.</li>
+            <li><strong>False Positive (FP) - False Alarm:</strong> A legitimate employee or customer is misidentified as a hacker $\rightarrow$ their connection is terminated, creating an accidental Self-Inflicted Denial of Service and exhausting SOC analysts.</li>
+        </ol>
+        This project builds and benchmarks a complete end-to-end pipeline to solve this exact dual challenge.
+    </div>
+
+    <!-- 2. THE THREE DATASETS EXPLAINED -->
+    <h2>2. The Three Dataset Files Explained: Why 3 Files?</h2>
+    <p>
+        The UNSW-NB15 benchmark was generated at the Australian Cyber Security Centre (ACCS) using an IXIA PerfectStorm simulation rig to synthesize 100 GB of modern normal traffic and 9 types of sophisticated attacks. The project utilizes three distinct files:
+    </p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Records</th>
+                    <th>File Size</th>
+                    <th>Role in Pipeline</th>
+                    <th>Target Split</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>UNSW_NB15_training-set.csv</code></td>
+                    <td>175,341</td>
+                    <td>~32.1 MB</td>
+                    <td>Model Training & Preprocessor Fitting</td>
+                    <td>Normal: 56,000 (31.9%)<br>Attack: 119,341 (68.1%)</td>
+                </tr>
+                <tr>
+                    <td><code>UNSW_NB15_testing-set.csv</code></td>
+                    <td>82,332</td>
+                    <td>~15.3 MB</td>
+                    <td>Untouched Blind Evaluation Benchmark</td>
+                    <td>Normal: 37,000 (44.9%)<br>Attack: 45,332 (55.1%)</td>
+                </tr>
+                <tr>
+                    <td><code>UNSW-NB15_features.csv</code></td>
+                    <td>44 Rows</td>
+                    <td>~3.2 KB</td>
+                    <td>Feature Dictionary & Metadata Schema</td>
+                    <td>Documentation & Schema Definition</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Why Are There Three Separate Datasets Instead of Just One?</h3>
+    <ul>
+        <li>
+            <strong>1. Strict Academic Standardization & Benchmark Reproducibility:</strong>
+            If researchers randomly split a single dataset using <code>train_test_split(test_size=0.2)</code>, every university and researcher would test on different random subsets, making fair comparison impossible. The creators of UNSW-NB15 officially defined these two specific train/test files so any research paper or engineer in the world can be benchmarked on identical test conditions.
+        </li>
+        <li>
+            <strong>2. Preventing "Data Snooping" and Contamination:</strong>
+            In cybersecurity, models in production face incoming traffic from tomorrow, not yesterday. Keeping a completely untouched testing set ensures our models do not overfit to specific source IPs, session IDs, or synthetic time artifacts present in the training set.
+        </li>
+        <li>
+            <strong>3. The Metadata / Schema Dictionary (<code>UNSW-NB15_features.csv</code>):</strong>
+            Raw PCAP packet captures contain thousands of low-level variables. This 3rd file serves as the official data dictionary, explaining the data type (float, integer, categorical), group (Basic, Content, Time, Generated), and technical definition of all 42 network features.
+        </li>
+    </ul>
+
+    <!-- 3. NETWORK FEATURES EXPLAINED -->
+    <h2>3. Network Features Explained in Simple Terms</h2>
+    <p>
+        The dataset contains 42 input features (after removing row index <code>id</code> and the attack label). To understand what the AI actually sees, we categorize them into 4 plain-language groups:
+    </p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature Group</th>
+                    <th>Key Feature Names</th>
+                    <th>What It Measures (Plain English)</th>
+                    <th>Cybersecurity Significance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. Basic Traffic Features</strong></td>
+                    <td><code>dur</code>, <code>proto</code>, <code>service</code>, <code>state</code>, <code>spkts</code>, <code>dpkts</code>, <code>sbytes</code>, <code>dbytes</code>, <code>rate</code>, <code>sttl</code>, <code>dttl</code></td>
+                    <td>Connection duration, protocol used (TCP, UDP, ICMP), service (HTTP, DNS, FTP), number of packets, raw bytes transferred, and packet rate.</td>
+                    <td>
+                        <strong>Dead Giveaway:</strong> <code>sttl</code> (Source Time-To-Live). Normal Windows/Linux machines use standard TTLs (64 or 128). Automated scanning tools or spoofed IP packets often present erratic TTL values like 254.
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>2. Content & Payload Features</strong></td>
+                    <td><code>sload</code>, <code>dload</code>, <code>sloss</code>, <code>dloss</code>, <code>swin</code>, <code>dwin</code>, <code>smean</code>, <code>dmean</code>, <code>trans_depth</code>, <code>response_body_len</code></td>
+                    <td>Bits per second transfer speed, packet loss/retransmissions, TCP window advertisement sizes, and average packet byte size.</td>
+                    <td>
+                        Identifies data exfiltration (huge outbound <code>sbytes</code>) or Denial of Service flooding (huge <code>sload</code> with high packet drop <code>sloss</code>).
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>3. Time & Jitter Features</strong></td>
+                    <td><code>sinpkt</code>, <code>dinpkt</code>, <code>sjit</code>, <code>djit</code>, <code>tcprtt</code>, <code>synack</code>, <code>ackdat</code></td>
+                    <td>Microsecond inter-arrival time between packets, network jitter, and TCP 3-way handshake round trip times.</td>
+                    <td>
+                        Normal human browsing is bursty and irregular. Automated attack tools (like botnet scripts or Port Scanners) blast packets at rigidly uniform microsecond intervals.
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>4. Connection Flow (Generated) Features</strong></td>
+                    <td><code>ct_srv_src</code>, <code>ct_state_ttl</code>, <code>ct_dst_ltm</code>, <code>ct_src_dport_ltm</code>, <code>ct_srv_dst</code>, <code>is_sm_ips_ports</code></td>
+                    <td>Historical window counters: tracks how many connections have been made to the same destination port, same IP, or same service in the last 100 connections.</td>
+                    <td>
+                        <strong>DoS & Reconnaissance Detector:</strong> If a single IP makes 90 connections to 90 different ports in 100 milliseconds (<code>ct_dst_sport_ltm</code> is high), it is an active Port Scan (Nmap).
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 4. THE 9 ATTACK TYPES -->
+    <h2>4. The Threat Landscape: 9 Attack Categories (MITRE ATT&CK Mapped)</h2>
+    <p>Malicious traffic in the dataset is labeled under <code>attack_cat</code> across 9 distinct threat categories:</p>
+    <ul>
+        <li><strong>Generic (33.6%):</strong> Cryptographic collision attacks and generic cipher bypasses that evade standard signature engines.</li>
+        <li><strong>Exploits (25.4%):</strong> Direct weaponized attacks targeting known software bugs (buffer overflows, SQL injections) to gain unauthorized access.</li>
+        <li><strong>Fuzzers (13.8%):</strong> Automated tools that blast servers with random, oversized, or illegal packet structures to induce system crashes.</li>
+        <li><strong>DoS - Denial of Service (9.3%):</strong> Connection flooding attacks designed to exhaust server CPU, memory, or bandwidth.</li>
+        <li><strong>Reconnaissance (8.0%):</strong> Port scanning and network topology discovery (e.g., Nmap scans looking for open doors).</li>
+        <li><strong>Analysis (1.5%):</strong> Vulnerability scanners that crawl web apps looking for HTML/parameter injection weaknesses.</li>
+        <li><strong>Backdoor (1.3%):</strong> Stealthy remote access tools installed on compromised machines allowing covert operator control.</li>
+        <li><strong>Shellcode (0.9%):</strong> Tiny snippets of machine code injected into memory buffers to spawn an interactive shell.</li>
+        <li><strong>Worms (0.1%):</strong> Self-replicating autonomous malware that spreads across the network without human interaction (rarest category).</li>
+    </ul>
+
+    <!-- 5. PREPROCESSING: WHAT WAS DONE VS NOT DONE -->
+    <h2>5. Data Preprocessing: What Was Done vs. What Was NOT Done (And Why)</h2>
+    <p>
+        Data preprocessing determines whether a machine learning model learns true cybersecurity physics or merely memorizes synthetic dataset noise. Here is the strict breakdown:
+    </p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Pipeline Operation</th>
+                    <th>Status</th>
+                    <th>Why This Decision Was Made (Technical Justification)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. Remove <code>id</code></strong></td>
+                    <td><code>df.drop(columns=['id'])</code></td>
+                    <td><span class="badge success">DONE</span></td>
+                    <td>
+                        <strong>Prevents Shortcut Learning:</strong> The <code>id</code> column is simply a row counter (1, 2, 3...). In the raw data, attacks were captured in specific time batches, so row index correlates artificially with attack labels. Leaving <code>id</code> in would teach the model to predict attacks based on line numbers!
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>2. Isolate <code>attack_cat</code></strong></td>
+                    <td>Remove from feature matrix $X$; store in separate array</td>
+                    <td><span class="badge success">DONE</span></td>
+                    <td>
+                        <strong>Prevents Target Leakage:</strong> <code>attack_cat</code> explicitly spells out the attack name ("DoS", "Exploits"). In a binary classification task ($0$ vs $1$), leaving the attack category in the inputs would be massive label leakage. It was preserved strictly for Task 5 ethical bias evaluation.
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>3. Handle Missing Values</strong></td>
+                    <td><code>fillna(X_train[num_cols].median())</code></td>
+                    <td><span class="badge success">DONE</span></td>
+                    <td>
+                        Network features like packet rates and durations have extreme positive skew. Using median rather than mean prevents extreme outlier flows from biasing missing value replacements.
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>4. Categorical Encoding</strong></td>
+                    <td><code>LabelEncoder</code> on <code>proto</code>, <code>service</code>, <code>state</code></td>
+                    <td><span class="badge success">DONE</span></td>
+                    <td>
+                        Converts string protocols ('tcp', 'udp', 'icmp') into numeric integers so matrix multiplication and decision splits can process them mathematically.
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>5. Standard Feature Scaling</strong></td>
+                    <td><code>StandardScaler</code> fit on Train ONLY; transform on Test</td>
+                    <td><span class="badge success">DONE</span></td>
+                    <td>
+                        <strong>Critical ML Hygiene:</strong> Neural Networks (MLP) and Logistic Regression will fail or diverge if feature values range from $0.0001$ to $10,000,000$. Normalizing to mean $\mu=0$ and variance $\sigma=1$ ensures balanced gradient updates. <em>Scaling parameters were computed solely on the training data to prevent test leakage.</em>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>6. Synthetic Oversampling (SMOTE)</strong></td>
+                    <td>Generating artificial packets</td>
+                    <td><span class="badge warning">NOT DONE</span></td>
+                    <td>
+                        <strong>Why Omitted:</strong> Generating fake synthetic packets (like SMOTE) distorts real-world network physics. In production networks, normal traffic is abundant and specific attacks (like Worms) are rare. Training on fake packets creates high False Positive Rates on real enterprise traffic.
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>7. Retrospective Resplitting</strong></td>
+                    <td>Combining & randomly shuffling train/test</td>
+                    <td><span class="badge warning">NOT DONE</span></td>
+                    <td>
+                        <strong>Why Omitted:</strong> The dataset creators intentionally split train and test to represent distinct capture time intervals. Merging and re-splitting would artificially inflate test scores and violate the benchmark specification.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 6. END-TO-END PIPELINE ARCHITECTURE DIAGRAM -->
+    <h2>6. Full Pipeline Architecture (Visual Workflow)</h2>
+    <div class="pipeline-diagram">
++---------------------------------------------------------------------------------------------------+
+|                            UNSW-NB15 END-TO-END SYSTEM PIPELINE                                   |
++---------------------------------------------------------------------------------------------------+
+                                                  |
+                 +--------------------------------+--------------------------------+
+                 |                                                                 |
+                 v                                                                 v
+   [UNSW_NB15_training-set.csv]                                      [UNSW_NB15_testing-set.csv]
+          (175,341 records)                                                (82,332 records)
+                 |                                                                 |
+                 v                                                                 |
+     [Task 1 & 2: EDA & Security Audit]                                            |
+     - Class balance (68.1% Attack / 31.9% Normal)                                 |
+     - Protocol/Service threat breakdowns                                          |
+     - Feature correlation heatmaps                                                |
+                 |                                                                 |
+                 v                                                                 |
+     [Task 3: Preprocessing Pipeline]                                              |
+     1. Drop 'id' column (no shortcut learning)                                    |
+     2. Extract 'label' (y) and isolate 'attack_cat'                               |
+     3. LabelEncode categorical ('proto', 'service', 'state')                      |
+     4. Fit StandardScaler on Train features (μ, σ)                               |
+                 |                                                                 |
+                 v                                                                 v
+         (Transformed X_train)                                             (Transformed X_test)
+                 |                                                                 |
+       +---------+--------------------+                                            |
+       |                              |                                            |
+       v                              v                                            v
+[Classical ML Classifiers]     [Deep Learning MLP]                                 |
+- Logistic Regression          - Input: 42 features                                |
+- Decision Tree (Depth=12)     - Layer 1: 128 units (ReLU)                         |
+- Random Forest (100 trees)    - Layer 2: 64 units (ReLU)                          |
+                               - Output: 1 Sigmoid neuron                          |
+                               - Optimizer: Adam (lr=0.001)                        |
+       |                              |                                            |
+       +------------------------------+                                            |
+                 |                                                                 |
+                 v                                                                 |
+         [Trained Model Weights] --------------------------------------------------+
+                                                                                   |
+                                                                                   v
+                                                                    [Blind Benchmark Evaluation]
+                                                                    - Accuracy, Precision, Recall
+                                                                    - F1-Score, ROC-AUC, FPR, FNR
+                                                                    - Training vs Latency benchmarks
+                                                                                   |
+                                                                                   v
+                                                                    [Task 5: Operational Tuning]
+                                                                    - Threshold tuning (τ: 0.50 -> 0.82)
+                                                                    - Per-attack category bias audit
+                                                                    - Save best model (Random Forest)
+    </div>
+
+    <!-- 7. MODEL BENCHMARK RESULTS -->
+    <h2>7. Empirical Results: All Model Accuracies & Full Metric Benchmark</h2>
+    <p>
+        All four models were trained on the 175,341 training flows and evaluated on the <strong>82,332 completely untouched test records</strong>.
+    </p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Model Architecture</th>
+                    <th>Accuracy</th>
+                    <th>Precision</th>
+                    <th>Recall (Detection Rate)</th>
+                    <th>F1-Score</th>
+                    <th>ROC-AUC</th>
+                    <th>False Positive Rate (FPR)</th>
+                    <th>Training Time</th>
+                    <th>Inference Latency (10k packets)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Logistic Regression</strong> (Linear Baseline)</td>
+                    <td>80.44%</td>
+                    <td>74.91%</td>
+                    <td>96.95%</td>
+                    <td>0.8452</td>
+                    <td>0.9351</td>
+                    <td>39.78%</td>
+                    <td>4.00s</td>
+                    <td><strong>1.70 ms</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Decision Tree</strong> (Rule-Based Engine)</td>
+                    <td>85.36%</td>
+                    <td>80.72%</td>
+                    <td>96.46%</td>
+                    <td>0.8789</td>
+                    <td>0.9625</td>
+                    <td>28.23%</td>
+                    <td><strong>2.81s</strong></td>
+                    <td>2.47 ms</td>
+                </tr>
+                <tr class="highlight-best">
+                    <td><strong>Random Forest</strong> (Ensemble - Top Performer)</td>
+                    <td><strong>86.47%</strong></td>
+                    <td>80.81%</td>
+                    <td><strong>98.92%</strong></td>
+                    <td><strong>0.8895</strong></td>
+                    <td><strong>0.9831</strong></td>
+                    <td>28.78%</td>
+                    <td>18.49s</td>
+                    <td>48.49 ms</td>
+                </tr>
+                <tr>
+                    <td><strong>Deep Learning (MLP 128x64)</strong></td>
+                    <td>85.71%</td>
+                    <td><strong>80.89%</strong></td>
+                    <td>96.94%</td>
+                    <td>0.8819</td>
+                    <td>0.9686</td>
+                    <td><strong>28.06%</strong></td>
+                    <td>180.06s</td>
+                    <td>38.93 ms</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Which Model Was Used and WHY Was It Chosen?</h3>
+    <ul>
+        <li>
+            <strong>1. Logistic Regression:</strong> Serves as our mathematical <em>linear baseline</em>. It asks: <em>"Can network threats be cleanly separated with a simple hyper-plane?"</em> Result: While it is ultra-fast (1.7 ms inference), its linear nature leads to an unacceptable 39.78% False Positive Rate.
+        </li>
+        <li>
+            <strong>2. Decision Tree Classifier:</strong> Network intrusion signatures are inherently rule-driven (e.g., <em>"IF protocol == TCP AND port == 80 AND packet_size > 1500 THEN flag"</em>). Decision trees mirror this exact logic. Constrained to <code>max_depth=12</code>, it delivers 85.36% accuracy with blazing-fast 2.47 ms inference, making it 100% human-interpretable for SOC security analysts.
+        </li>
+        <li>
+            <strong>3. Random Forest (100 Trees):</strong> Solves the decision tree's tendency to overfit by training an ensemble of 100 decorrelated trees. It emerged as the <strong>Overall Champion</strong> with a staggering <strong>98.92% Recall</strong> and an outstanding <strong>0.9831 ROC-AUC</strong>, missing only 1.08% of cyber threats across the entire test set.
+        </li>
+        <li>
+            <strong>4. Multi-Layer Perceptron (Deep Learning):</strong> A 3-layer neural network (Input $\rightarrow$ 128 ReLU $\rightarrow$ 64 ReLU $\rightarrow$ Sigmoid output). Deep Learning was deployed to test whether multi-layer hierarchical abstractions could outperform decision trees on raw network flow statistics.
+        </li>
+    </ul>
+
+    <!-- 8. WHY COMPARE ML VS DL? -->
+    <h2>8. Why Compare ML vs. DL? What Is the Benefit?</h2>
+    <p>
+        In modern cybersecurity marketing, "Deep Learning" and "Neural Networks" are often hyped as universally superior. A primary research objective of this project is to perform an honest, empirical comparison between Classical Machine Learning and Deep Learning.
+    </p>
+
+    <div class="callout success">
+        <strong>The Key Findings & Benefits of the ML vs. DL Comparison:</strong>
+        <ol>
+            <li>
+                <strong>Tabular Data Reality:</strong> On structured, tabular network flow features, Tree Ensembles (Random Forest) outperform Deep Neural Networks (MLP: 85.71% vs RF: 86.47% accuracy; Recall: 96.94% vs RF: 98.92%).
+            </li>
+            <li>
+                <strong>Training Efficiency:</strong> Decision Tree trained in <strong>2.81 seconds</strong> and Random Forest in <strong>18.49 seconds</strong>, whereas the Deep Learning MLP required <strong>180.06 seconds (~3 minutes)</strong>—a 10x to 60x computational penalty with no gain in detection rate!
+            </li>
+            <li>
+                <strong>Edge Firewall Deployment:</strong> Network routers (Cisco, Fortinet) operate on limited CPU hardware. Decision Trees require only <strong>2.47 ms per 10,000 packets</strong> and simple <code>IF/ELSE</code> memory structures that can be compiled directly onto FPGA silicon or eBPF kernel hooks. Deep Learning networks require floating-point matrix multiplications that choke low-power edge gateways.
+            </li>
+            <li>
+                <strong>Explainability (XAI) in the SOC:</strong> When a firewall drops a CEO's packet or isolates a server, the Security Operations Center (SOC) analyst must answer: <em>"Why was this blocked?"</em> Decision trees provide clear inspection pathways, while Deep Neural Networks act as black boxes.
+            </li>
+        </ol>
+    </div>
+
+    <!-- 9. TASK 5: ETHICAL THRESHOLD SIMULATION -->
+    <h2>9. Ethical Considerations & SOC Operational Threshold Tuning</h2>
+    <p>
+        Standard classification defaults to a 50% probability threshold ($\tau = 0.50$). However, evaluating this default in a real-world Security Operations Center reveals a serious operational crisis:
+    </p>
+
+    <div class="callout warning">
+        <strong>The Default Threshold Crisis ($\tau = 0.50$):</strong>
+        At $\tau = 0.50$, the False Positive Rate is <strong>28.78%</strong>. That means out of 37,000 legitimate normal sessions in the test set, <strong>10,648 real users are blocked!</strong> In a university or hospital, shutting off 28% of legitimate users causes widespread disruption, angry tickets, and analyst burnout.
+    </div>
+
+    <h3>The Solution: Operational Threshold Tuning ($\tau = 0.82$)</h3>
+    <p>
+        In <code>src/ethical_sim.py</code>, we sweep the decision threshold across 37 points. Shifting the threshold from $\tau = 0.50 \rightarrow 0.82$:
+    </p>
+    <ul>
+        <li><strong>False Positive Rate drops from 28.78% down to 5.57%</strong> (a 5x reduction in false alarms!).</li>
+        <li><strong>Precision jumps from 80.81% to 95.22%</strong> (when an alarm rings, analysts are 95% confident it is real).</li>
+        <li><strong>Security Coverage remains solid at 90.67% Recall</strong>.</li>
+    </ul>
+
+    <h3>Per-Category Threat Bias Audit (Test Set Breakdown)</h3>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Attack Category</th>
+                    <th>Total Test Packets</th>
+                    <th>Detection Rate (Recall)</th>
+                    <th>Missed Packets</th>
+                    <th>Operational Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Generic</strong></td>
+                    <td>18,871</td>
+                    <td><strong>100.00%</strong></td>
+                    <td>0</td>
+                    <td>Flawless detection across all variants.</td>
+                </tr>
+                <tr>
+                    <td><strong>Exploits</strong></td>
+                    <td>11,132</td>
+                    <td><strong>99.69%</strong></td>
+                    <td>34</td>
+                    <td>High-impact software vulnerabilities caught cleanly.</td>
+                </tr>
+                <tr>
+                    <td><strong>DoS</strong></td>
+                    <td>4,089</td>
+                    <td><strong>99.90%</strong></td>
+                    <td>4</td>
+                    <td>Volumetric floods detected almost instantaneously.</td>
+                </tr>
+                <tr>
+                    <td><strong>Reconnaissance</strong></td>
+                    <td>3,496</td>
+                    <td><strong>99.94%</strong></td>
+                    <td>2</td>
+                    <td>Port scanning behavior caught through connection counts.</td>
+                </tr>
+                <tr>
+                    <td><strong>Backdoor</strong></td>
+                    <td>583</td>
+                    <td><strong>100.00%</strong></td>
+                    <td>0</td>
+                    <td>Covert channels completely neutralized.</td>
+                </tr>
+                <tr>
+                    <td><strong>Shellcode</strong></td>
+                    <td>378</td>
+                    <td><strong>99.47%</strong></td>
+                    <td>2</td>
+                    <td>Injected payloads caught via payload & length markers.</td>
+                </tr>
+                <tr>
+                    <td><strong>Worms</strong></td>
+                    <td>44</td>
+                    <td><strong>100.00%</strong></td>
+                    <td>0</td>
+                    <td>Despite being only 0.1% of data, 100% of worms were halted.</td>
+                </tr>
+                <tr style="background: #fff1f2;">
+                    <td><strong>Fuzzers (Vulnerable Class)</strong></td>
+                    <td>6,062</td>
+                    <td><strong>92.73%</strong></td>
+                    <td><strong>441</strong></td>
+                    <td>
+                        <strong>Dataset Blindspot:</strong> Fuzzing generates pseudo-random mutated packet bytes that often look like slightly noisy normal traffic. Future iterations should add specialized payload entropy features.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 10. EVERY FILE EXPLAINED -->
+    <h2>10. Complete File-by-File Walkthrough of the Project</h2>
+    <p>Every file in the repository was built with modular, production-ready engineering standards:</p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Folder / File</th>
+                    <th>Lines / Size</th>
+                    <th>Exact Purpose & Responsibility</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>src/validate_env.py</code></td>
+                    <td>57 lines</td>
+                    <td>Automated diagnostic script. Checks Python version, verifies dependencies (pandas, sklearn, seaborn), checks directory structure, and verifies that the dataset CSVs exist.</td>
+                </tr>
+                <tr>
+                    <td><code>src/data_preprocessing.py</code></td>
+                    <td>106 lines</td>
+                    <td>The core data engine. Implements <code>load_data()</code> and <code>preprocess_datasets()</code>. Drops <code>id</code>, extracts targets, encodes categoricals via <code>LabelEncoder</code>, and scales numerical columns via <code>StandardScaler</code> fit exclusively on training data.</td>
+                </tr>
+                <tr>
+                    <td><code>src/eda_analysis.py</code></td>
+                    <td>202 lines</td>
+                    <td>Generates high-resolution EDA figures: class distribution bar chart, attack category breakdown, protocol/service threat distributions, KDE feature plots (sttl, rate, smean), correlation heatmaps, and tree feature importance ranking.</td>
+                </tr>
+                <tr>
+                    <td><code>src/ml_models.py</code></td>
+                    <td>117 lines</td>
+                    <td>Trains Logistic Regression, Decision Tree, and Random Forest. Computes 8 metrics, measures training duration and real-time inference latency (ms per 10k packets), and plots ROC curves.</td>
+                </tr>
+                <tr>
+                    <td><code>src/dl_models.py</code></td>
+                    <td>147 lines</td>
+                    <td>Builds the Deep Learning Multi-Layer Perceptron (128x64 neurons) using scikit-learn's <code>MLPClassifier</code> with Adam optimizer and early stopping. Also generates the 4-panel ML vs DL comparison bar charts.</td>
+                </tr>
+                <tr>
+                    <td><code>src/ethical_sim.py</code></td>
+                    <td>144 lines</td>
+                    <td>Executes Task 5: sweeps probability thresholds to simulate the precision/recall/FPR trade-off curve, and computes per-category detection rates to audit model bias on rare attacks.</td>
+                </tr>
+                <tr>
+                    <td><code>src/main.py</code></td>
+                    <td>73 lines</td>
+                    <td>The Master Orchestrator. Executes Tasks 1 through 5 in sequence with a single command: loads data, runs EDA, cleans data, trains all 4 models, generates comparison charts, runs bias simulations, and saves the best model.</td>
+                </tr>
+                <tr>
+                    <td><code>src/create_notebook.py</code></td>
+                    <td>24 KB</td>
+                    <td>Automated script that generates the interactive Jupyter notebook <code>notebooks/UNSW_NB15_Analysis.ipynb</code> complete with all narrative text, code cells, and inline figures.</td>
+                </tr>
+                <tr>
+                    <td><code>notebooks/UNSW_NB15_Analysis.ipynb</code></td>
+                    <td>~1 MB</td>
+                    <td>The interactive lab notebook. Contains fully executed code cells, interactive tables, and all 9 visualization figures embedded inline.</td>
+                </tr>
+                <tr>
+                    <td><code>outputs/best_threat_detector_rf.joblib</code></td>
+                    <td>~18.7 MB</td>
+                    <td>The serialized, ready-to-deploy Random Forest model file. Can be loaded into any live firewall or microservice with <code>joblib.load()</code> for instant threat prediction.</td>
+                </tr>
+                <tr>
+                    <td><code>outputs/*.png</code></td>
+                    <td>9 Figures</td>
+                    <td>High-resolution publication figures (300 DPI) illustrating class distributions, heatmaps, feature importance, ROC curves, and ML vs DL benchmarks.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 11. QUICKSTART INSTRUCTIONS -->
+    <h2>11. How to Run the Project & Generate Reports</h2>
+    <pre>
+# Step 1: Verify Environment & Datasets
+python src/validate_env.py
+
+# Step 2: Execute Complete End-to-End Pipeline
+python src/main.py
+
+# Step 3: Launch Interactive Jupyter Notebook
+jupyter notebook notebooks/UNSW_NB15_Analysis.ipynb
+    </pre>
+
+    <div class="callout success">
+        <strong>How to Print or Convert this Report to PDF:</strong>
+        <p>
+            This file is saved as <code>report/COMPREHENSIVE_PROJECT_REPORT.html</code>. You can open it in Google Chrome, Microsoft Edge, or Firefox, and simply press <strong>Ctrl + P</strong> (or click the blue button at the top). Choose <em>"Save as PDF"</em>, select <em>A4 paper</em> and <em>Background graphics: Checked</em>, and you will have an executive-grade PDF document ready for submission!
+        </p>
+    </div>
+
+    <div style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--text-muted); text-align: center;">
+        AI in Cyber Security Lab (ENSP355) — Unit 1 Mini Project &bull; K.R. Mangalam University &bull; Academic Year 2026
+    </div>
+</div>
+
+</body>
+</html>
+
